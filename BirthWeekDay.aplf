@@ -1,0 +1,16 @@
+ r←BirthWeekDay date;years;css;HTMLfns;parms;year;month;day;next10
+⍝ Given a birth date, return the weekday of that birthday for the next 10 years
+⍝   If no date given, use CEF_Utility "PickDate" to request input from user
+
+ :If 0=≢date ⍝ No date given: Prompt for it
+     css←CEF_Utility.Demo.FormCSS
+     HTMLfns←CEF_Utility.UserFunctions
+     parms←HTMLfns.specifyParams('Title' 'Enter Date of Birth:')('Size' 20 30)('CSS'css)
+     →(¯1≡date←parms HTMLfns.PickDate⊂'Pretty please<br>')⍴0
+     date←2⊃'-'⎕VFI 1⊃date
+ :EndIf
+
+ (year month day)←date
+ years←(¯1+1⊃⎕TS)+⍳10      ⍝ Next 10 years
+ next10←years,⊂month day   ⍝ Next 10 birthdays
+ r←years,⍪DayNames[#.DateTime.WeekDay¨next10]
