@@ -1,0 +1,24 @@
+ r←{mode}Build folder;dev;opts;parentfolder;linkfn
+
+ :If 0=⎕NC'mode' ⋄ mode←'prod' ⋄ :EndIf
+ 'Mode must be one of: dev prod'⎕SIGNAL((⊂mode)∊'dev' 'prod')↓11
+ dev←mode≡'dev'
+
+ r←⊂mode,' workspace built from ',folder
+
+ parentfolder←1⊃⎕NPARTS folder
+ :If dev ⋄ linkfn←⎕SE.Link.Create
+ :Else ⋄ linkfn←⎕SE.Link.Import
+ :EndIf
+
+ opts←⎕NS''
+ opts.source←'dir'
+ opts.watch←'both'
+
+ r,←⊂opts linkfn # (folder,'/APLSource') ⍝ Load our APLSource into #
+
+ opts.watch←'none' ⍝ Even in DEV mode, do NOT auto-update dependencies
+ r,←⊂opts linkfn '#.DateTime' (parentfolder,'DateTime/APLSource')
+ r,←⊂opts linkfn '#.CEF_Utility' (parentfolder,'CEF-Utility/APLSource')
+
+ r←⍪r
